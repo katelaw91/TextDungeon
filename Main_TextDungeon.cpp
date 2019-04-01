@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <windows.h>
 #include <iomanip>
@@ -14,7 +13,7 @@ int playerX_Move, playerY_Move;
 enum direction { NONE, LEFT, RIGHT, UP, DOWN };
 direction dir;
 
-char Map[10][22] = { "##########=#########",
+char Map[10][22] = {"##########=#########",
 					"#                  #",
 					"#                  #",
 					"#                  #",
@@ -45,27 +44,27 @@ void Draw()
 	//search map grid for player, then move based on dir input
 	//if there is an empty space, move character to the new position
 	//and replace old character position with  blank space
-	for (int y = 0; y < height; y++)
-		for (int x = 0; x < height; x++)
+	for(int y = 0; y < height; y++)
+		for(int x = 0; x < height; x++)
 			switch (Map[playerY][playerX])
 			{
 			case '@':
 			{
-				if (dir == UP)
+				if (dir == UP) 
 				{
 					playerY_Move = playerY - 1;
 					switch (Map[playerY_Move][playerX])
 					{
-					case ' ':
-					{
-						Map[playerY][playerX] = ' ';
-						playerY -= 1;
-						Map[playerY_Move][playerX] = '@';
-						dir = NONE;
-						break;
-					}
+						case ' ': 
+						{
+							Map[playerY][playerX] = ' ';
+							playerY -= 1;
+							Map[playerY_Move][playerX] = '@';
+							dir = NONE;
+							break;
+						}
 
-					case '=': {level = 2; break; }
+						case '=': {level = 2;break;}
 					}
 				}
 
@@ -74,15 +73,15 @@ void Draw()
 					playerY_Move = playerY + 1;
 					switch (Map[playerY_Move][playerX])
 					{
-					case ' ':
-					{
-						Map[playerY][playerX] = ' ';
-						playerY += 1;
-						Map[playerY_Move][playerX] = '@';
-						dir = NONE;
-						break;
-					}
-					case '=': {level = 2; break; }
+						case ' ':
+						{
+							Map[playerY][playerX] = ' ';
+							playerY += 1;
+							Map[playerY_Move][playerX] = '@';
+							dir = NONE;
+							break;
+						}
+						case '=': {level = 2; break; }
 					}
 
 				}
@@ -92,15 +91,15 @@ void Draw()
 					playerX_Move = playerX + 1;
 					switch (Map[playerY][playerX_Move])
 					{
-					case ' ':
-					{
-						Map[playerY][playerX] = ' ';
-						playerX += 1;
-						Map[playerY][playerX_Move] = '@';
-						dir = NONE;
-						break;
-					}
-					case '=': {level = 2; break; }
+						case ' ':
+						{
+							Map[playerY][playerX] = ' ';
+							playerX += 1;
+							Map[playerY][playerX_Move] = '@';
+							dir = NONE;
+							break;
+						}
+						case '=': {level = 2; break; }
 					}
 				}
 
@@ -109,15 +108,15 @@ void Draw()
 					playerX_Move = playerX - 1;
 					switch (Map[playerY][playerX_Move])
 					{
-					case ' ':
-					{
-						Map[playerY][playerX] = ' ';
-						playerX -= 1;
-						Map[playerY][playerX_Move] = '@';
-						dir = NONE;
-						break;
-					}
-					case '=': {level = 2; break; }
+						case ' ':
+						{
+							Map[playerY][playerX] = ' ';
+							playerX -= 1;
+							Map[playerY][playerX_Move] = '@';
+							dir = NONE;
+							break;
+						}
+						case '=': {level = 2; break; }
 					}
 				}
 
