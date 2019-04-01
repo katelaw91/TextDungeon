@@ -1,0 +1,11 @@
+Current:
+
+-Creates level 1 room.
+-Player can move with arrow keys.
+
+Planned:
+
+-Create level class to facilitate making a room by giving height,width parameters
+-Give function to '=' door character
+-Store different rooms in vector/array
+-Create NPC class and start basic NPC mechanics.
