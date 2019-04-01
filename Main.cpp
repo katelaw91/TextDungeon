@@ -13,7 +13,7 @@ int playerX_Move, playerY_Move;
 enum direction { NONE, LEFT, RIGHT, UP, DOWN };
 direction dir;
 
-char Map[10][22] = {"##########=#########",
+char Map[10][22] =                     {"##########=#########",
 					"#                  #",
 					"#                  #",
 					"#                  #",
