@@ -36,28 +36,9 @@ void Setup()
 
 void Draw()
 {
-	//clear the screen
-	system("cls"); 
-
-	//display map
-	for (int i = 0; i < height; i++) 
-	{
-		cout << "\n";
-		for (int j = 0; j < width; j++)
-		{
-			// Print # if this is first row or last row.  
-			// Or this column is first or last. 
-			if (i == 0 || i == height - 1 ||
-				j == 0 || j == width - 1)
-				cout << "#";
-			else
-				cout << " ";
-		}
-	} 
-
-	//display character
-	Map[playerY][playerX] = '@'; 
-
+	system("cls"); //clear the screen
+	for (int i = 0; i < height; i++) { cout << Map[i] << endl; } //display map
+	Map[playerY][playerX] = '@'; //display character
 
 	//search map grid for player, then move based on dir input
 	//if there is an empty space, swap with player char
