@@ -31,7 +31,7 @@ void Draw()
 	int width = olvl1.getWidth();
 	int playerX = 1, playerY = height - 2;
 	int playerX_Move, playerY_Move;
-	vec map;
+	vec Map;
 
 	system("cls"); //clear the screen
 	Map = olvl1.getLevel(); //fill map grid
