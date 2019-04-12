@@ -1,28 +1,21 @@
 #include <iostream>
 #include <windows.h>
 #include <iomanip>
+#include <vector>
+#include "Level.h"
 
 using namespace std;
+using vec = vector<vector<char> >; //alias for 2D vector for easier re-typing
 
 bool gameOver = false;
 int Gamespeed = 100;
 int level = 1;
-int width = 22, height = 10;
 int playerX = 1, playerY = height - 2;
 int playerX_Move, playerY_Move;
+vec map;
+Level olvl1(5, 5);
 enum direction { NONE, LEFT, RIGHT, UP, DOWN };
 direction dir;
-
-char Map[10][22] =                     {"##########=#########",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"####################" };
 
 void Setup()
 {
@@ -31,40 +24,41 @@ void Setup()
 	cout << "\n\nText Dungeon\n\n";
 	Sleep(1500);
 	cout << "\n\n<insert menu/instructions here or something>...\n\n";
-	Sleep(3000);
+	Sleep(2000);
+
 }
 
 void Draw()
 {
 	system("cls"); //clear the screen
-	for (int i = 0; i < height; i++) { cout << Map[i] << endl; } //display map
+	Map = olvl1.getLevel(); //fill map grid
+	olvl1.displayRoom(); //display map
 	Map[playerY][playerX] = '@'; //display character
 
+	int height = olvl1.getHeight();
+	int width = olvl1.setHeight();
 
 	//search map grid for player, then move based on dir input
-	//if there is an empty space, move character to the new position
-	//and replace old character position with  blank space
-	for(int y = 0; y < height; y++)
-		for(int x = 0; x < height; x++)
-			switch (Map[playerY][playerX])
+	//if there is an empty space, swap with player char
+	for (int y = 0; y < height; y++)
+		for (int x = 0; x < height; x++)
+			switch (Map[y][x])
 			{
-			case '@':
+			case '@': //search for char
 			{
-				if (dir == UP) 
+				if (dir == UP)
 				{
 					playerY_Move = playerY - 1;
 					switch (Map[playerY_Move][playerX])
 					{
-						case ' ': 
-						{
-							Map[playerY][playerX] = ' ';
-							playerY -= 1;
-							Map[playerY_Move][playerX] = '@';
+					case ' ': //blank space
+					{
+						swap(Map[playerY_Move][playerX], Map[playerY][playerX])
 							dir = NONE;
-							break;
-						}
+						break;
+					}
 
-						case '=': {level = 2;break;}
+					case '=': {level = 2; break; } //door
 					}
 				}
 
@@ -73,15 +67,13 @@ void Draw()
 					playerY_Move = playerY + 1;
 					switch (Map[playerY_Move][playerX])
 					{
-						case ' ':
-						{
-							Map[playerY][playerX] = ' ';
-							playerY += 1;
-							Map[playerY_Move][playerX] = '@';
+					case ' ':
+					{
+						swap(Map[playerY_Move][playerX], Map[playerY][playerX])
 							dir = NONE;
-							break;
-						}
-						case '=': {level = 2; break; }
+						break;
+					}
+					case '=': {level = 2; break; }
 					}
 
 				}
@@ -91,15 +83,13 @@ void Draw()
 					playerX_Move = playerX + 1;
 					switch (Map[playerY][playerX_Move])
 					{
-						case ' ':
-						{
-							Map[playerY][playerX] = ' ';
-							playerX += 1;
-							Map[playerY][playerX_Move] = '@';
+					case ' ':
+					{
+						swap(Map[playerY][playerX_Move], Map[playerY][playerX])
 							dir = NONE;
-							break;
-						}
-						case '=': {level = 2; break; }
+						break;
+					}
+					case '=': {level = 2; break; }
 					}
 				}
 
@@ -108,27 +98,27 @@ void Draw()
 					playerX_Move = playerX - 1;
 					switch (Map[playerY][playerX_Move])
 					{
-						case ' ':
-						{
-							Map[playerY][playerX] = ' ';
-							playerX -= 1;
-							Map[playerY][playerX_Move] = '@';
+					case ' ':
+					{
+						swap(Map[playerY][playerX_Move], Map[playerY][playerX])
 							dir = NONE;
-							break;
-						}
-						case '=': {level = 2; break; }
+						break;
+					}
+					case '=': {level = 2; break; }
 					}
 				}
 
 				break;
 			}
-
 			}
 
 	//output GUI
 	cout << "\n\nUse arrow keys to move.\n" << endl;
 	cout << "@: Player" << endl;
 	cout << "=: Door" << endl;
+
+
+
 
 
 
