@@ -10,9 +10,6 @@ using vec = vector<vector<char> >; //alias for 2D vector for easier re-typing
 bool gameOver = false;
 int Gamespeed = 100;
 int level = 1;
-int playerX = 1, playerY = height - 2;
-int playerX_Move, playerY_Move;
-vec map;
 Level olvl1(5, 5);
 enum direction { NONE, LEFT, RIGHT, UP, DOWN };
 direction dir;
@@ -30,13 +27,18 @@ void Setup()
 
 void Draw()
 {
+	int height = olvl1.getHeight();
+	int width = olvl1.getWidth();
+	int playerX = 1, playerY = height - 2;
+	int playerX_Move, playerY_Move;
+	vec map;
+
 	system("cls"); //clear the screen
 	Map = olvl1.getLevel(); //fill map grid
 	olvl1.displayRoom(); //display map
 	Map[playerY][playerX] = '@'; //display character
 
-	int height = olvl1.getHeight();
-	int width = olvl1.setHeight();
+
 
 	//search map grid for player, then move based on dir input
 	//if there is an empty space, swap with player char
