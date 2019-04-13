@@ -55,7 +55,7 @@ void Draw()
 						{
 							case ' ':
 							{
-								swap(Map[playerY_Move][playerX],Map[playerY][playerX])
+								swap(Map[playerY_Move][playerX],Map[playerY][playerX]);
 								dir = NONE;
 								break;
 							}
@@ -71,7 +71,7 @@ void Draw()
 						{
 							case ' ':
 							{
-								swap(Map[playerY_Move][playerX], Map[playerY][playerX])
+								swap(Map[playerY_Move][playerX], Map[playerY][playerX]);
 								dir = NONE;
 								break;
 							}
@@ -87,7 +87,7 @@ void Draw()
 						{
 						case ' ':
 						{
-							swap(Map[playerY][playerX_Move], Map[playerY][playerX])
+							swap(Map[playerY][playerX_Move], Map[playerY][playerX]);
 							dir = NONE;
 							break;
 						}
@@ -102,7 +102,7 @@ void Draw()
 						{
 							case ' ':
 							{
-								swap(Map[playerY][playerX_Move], Map[playerY][playerX])
+								swap(Map[playerY][playerX_Move], Map[playerY][playerX]);
 								dir = NONE;
 								break;
 							}
