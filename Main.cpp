@@ -1,28 +1,24 @@
-#include <iostream>
-#include <windows.h>
-#include <iomanip>
+#include <iostream> //for cout, endl
+#include <windows.h> //for sys clr
+#include <vector> //for 2d vector
+#include "read2DMaze.h" //load maze from file
+#include "GameLevel.h" //generate/save maze to file
 
 using namespace std;
 
 bool gameOver = false;
 int Gamespeed = 100;
+int Score = 0;
 int level = 1;
 int width = 22, height = 10;
-int playerX = 1, playerY = height - 2;
+int playerX = 1, playerY = 1;
 int playerX_Move, playerY_Move;
 enum direction { NONE, LEFT, RIGHT, UP, DOWN };
 direction dir;
 
-char Map[10][22] =                     {"##########=#########",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"#                  #",
-					"####################" };
+vector<int>::iterator it;
+vec2d Map(SIZE + 1, vector<char>(0));
+int columns = 0, rows = 0;
 
 void Setup()
 {
@@ -31,15 +27,58 @@ void Setup()
 	cout << "\n\nText Dungeon\n\n";
 	Sleep(1500);
 	cout << "\n\n<insert menu/instructions here or something>...\n\n";
-	Sleep(3000);
+	Sleep(1500);
+	readMaze(Map, rows, columns);
+	cout << "\n\nloaded maze successfully\n";
+	Sleep(1500);
+
+
+
 }
 
-void Draw()
+void NewLevel()
 {
-	system("cls"); //clear the screen
-	for (int i = 0; i < height; i++) { cout << Map[i] << endl; } //display map
-	Map[playerY][playerX] = '@'; //display character
+	level++;
+	Score+=100;
+	system("cls");
+	cout << "\n\n\n\n\n\n\n\n\nLevel " << level << endl;
+	cout << "\n\nScore: " << Score;
+	Sleep(3000);
+	GameLevel *oNewLevel = new GameLevel();
+	oNewLevel->Update();
+	vec2d NewMap(SIZE + 1, vector<char>(0));
+	readMaze(NewMap, rows, columns);
+	playerX = 1;
+	playerY = 1;
+	NewMap.swap(Map);
+	
+}
 
+void Draw(int &playerX, int &playerY)
+{
+	ofstream file;
+	file.open("error.txt");
+	file << "entering draw" << endl;
+	//for (int i = 0; i < height; i++) { cout << Map[i] << endl; } //display map
+
+	 //display map
+	for (int i = 0; i < rows; i++) 
+	{
+		for (int j = 0; j < columns; j++)
+		{
+			cout << Map[i][j];
+		}
+		cout << endl;
+	}
+	file << "setting the char" << endl;
+	Map[playerY][playerX] = '@'; //display character
+	file << "set the char" << endl;
+	file.close();
+
+	//output GUI
+	cout << "Use arrow keys to move." << endl;
+	cout << "@: Player" << endl;
+	cout << "=: Door" << endl;
 
 	//search map grid for player, then move based on dir input
 	//if there is an empty space, move character to the new position
@@ -64,7 +103,15 @@ void Draw()
 							break;
 						}
 
-						case '=': {level = 2;break;}
+						case '=': 
+						{
+							Map[playerY][playerX] = ' ';
+							playerY -= 1;
+							Map[playerY_Move][playerX] = '@';
+							dir = NONE;
+							NewLevel();
+							break;
+						}
 					}
 				}
 
@@ -81,7 +128,15 @@ void Draw()
 							dir = NONE;
 							break;
 						}
-						case '=': {level = 2; break; }
+						case '=':
+						{
+							Map[playerY][playerX] = ' ';
+							playerY += 1;
+							Map[playerY_Move][playerX] = '@';
+							dir = NONE;
+							NewLevel();
+							break;
+						}
 					}
 
 				}
@@ -99,7 +154,15 @@ void Draw()
 							dir = NONE;
 							break;
 						}
-						case '=': {level = 2; break; }
+						case '=':
+						{
+							Map[playerY][playerX] = ' ';
+							playerX += 1;
+							Map[playerY][playerX_Move] = '@';
+							dir = NONE;
+							NewLevel();
+							break;
+						}
 					}
 				}
 
@@ -116,7 +179,15 @@ void Draw()
 							dir = NONE;
 							break;
 						}
-						case '=': {level = 2; break; }
+						case '=':
+						{
+							Map[playerY][playerX] = ' ';
+							playerX -= 1;
+							Map[playerY][playerX_Move] = '@';
+							dir = NONE;
+							NewLevel();
+							break;
+						}
 					}
 				}
 
@@ -125,10 +196,7 @@ void Draw()
 
 			}
 
-	//output GUI
-	cout << "\n\nUse arrow keys to move.\n" << endl;
-	cout << "@: Player" << endl;
-	cout << "=: Door" << endl;
+
 
 
 
@@ -148,15 +216,24 @@ void Input()
 
 }
 
-
 int main()
 {
+	
+
+	GameLevel *oLevel = new GameLevel();
+	oLevel->Update();
+	//playerX = oLevel->getStartX();
+	//playerY = oLevel->getStartY();
+
 	Setup();
+
 	while (!gameOver)
 	{
-		Draw();
+		system("cls");
+		Draw(playerX, playerY);
 		Input();
 		Sleep(Gamespeed);
 	}
+
 	return 0;
 }
