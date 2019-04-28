@@ -3,11 +3,14 @@
 #include <vector> //for 2d vector
 #include "read2DMaze.h" //load maze from file
 #include "GameLevel.h" //generate/save maze to file
+#include <time.h>
+#include <chrono>
 
 using namespace std;
 
 bool gameOver = false;
 int Gamespeed = 100;
+double countDown = 30;
 int Score = 0;
 int level = 1;
 int menu = 0;
@@ -59,6 +62,8 @@ void NewLevel()
 	system("cls");
 	cout << "\n\n\n\n\n\n\n\n\nLevel " << level << endl;
 	cout << "\n\nScore: " << Score;
+	cout << "\n +30 seconds\n";
+	countDown += 3;
 	Sleep(3000);
 	GameLevel *oNewLevel = new GameLevel();
 	oNewLevel->Update();
@@ -67,6 +72,8 @@ void NewLevel()
 	playerX = 1;
 	playerY = 1;
 	NewMap.swap(Map);
+	countDown += 30;
+
 	
 }
 
@@ -239,7 +246,8 @@ void Input()
 
 int main()
 {
-	
+	time_t start, end;
+	double elapsedTime;
 
 	GameLevel *oLevel = new GameLevel();
 	oLevel->Update();
@@ -247,13 +255,22 @@ int main()
 	//playerY = oLevel->getStartY();
 
 	Setup();
+	time(&start); //start the timer
 
 	while (!gameOver)
 	{
-		system("cls");
-		Draw(playerX, playerY);
-		Input();
-		Sleep(Gamespeed);
+		do {
+			time(&end);
+			elapsedTime = difftime(end, start);
+			Draw(playerX, playerY);
+			Input();
+			printf("Time Left to Complete: [  %4.2f  ]\n", countDown - elapsedTime);
+			Sleep(Gamespeed);
+			system("cls");
+		} while (elapsedTime != countDown); //run for countDown seconds
+		gameOver = true;
+		//system("cls");
+
 	}
 
 	cout << "Game Over\n";
