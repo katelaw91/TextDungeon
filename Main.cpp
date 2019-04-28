@@ -10,11 +10,14 @@ bool gameOver = false;
 int Gamespeed = 100;
 int Score = 0;
 int level = 1;
+int menu = 0;
 int width = 22, height = 10;
 int playerX = 1, playerY = 1;
 int playerX_Move, playerY_Move;
 enum direction { NONE, LEFT, RIGHT, UP, DOWN };
 direction dir;
+char input;
+
 
 vector<int>::iterator it;
 vec2d Map(SIZE + 1, vector<char>(0));
@@ -26,12 +29,25 @@ void Setup()
 	Sleep(500);
 	cout << "\n\nText Dungeon\n\n";
 	Sleep(1500);
-	cout << "\n\n<insert menu/instructions here or something>...\n\n";
-	Sleep(1500);
-	readMaze(Map, rows, columns);
-	cout << "\n\nloaded maze successfully\n";
-	Sleep(1500);
+	cout << "\n\nN) New Game\n\n";
+	cout << "\nS) View High Scores\n\n";
 
+	while (menu != 1) {
+
+		cin >> input;
+
+		if ((input == 'n') || (input == 'N')) {
+			readMaze(Map, rows, columns);
+			cout << "\n\nloading maze...\n";
+			Sleep(1500);
+			menu = 1;
+		}
+		else {
+
+			cout << "Highscores go here..." << endl;
+
+		}
+	}
 
 
 }
@@ -79,7 +95,7 @@ void Draw(int &playerX, int &playerY)
 	cout << "Use arrow keys to move." << endl;
 	cout << "@: Player" << endl;
 	cout << "=: Door" << endl;
-
+	cout << "Press [esc] to quit." << endl;
 	//search map grid for player, then move based on dir input
 	//if there is an empty space, move character to the new position
 	//and replace old character position with  blank space
@@ -212,6 +228,11 @@ void Input()
 		dir = RIGHT;
 	if (GetAsyncKeyState(VK_LEFT) != 0)
 		dir = LEFT;
+	if (GetAsyncKeyState(VK_ESCAPE) != 0)
+	{ 
+		system("cls");
+		gameOver = true;
+	}
 
 
 }
@@ -234,6 +255,9 @@ int main()
 		Input();
 		Sleep(Gamespeed);
 	}
+
+	cout << "Game Over\n";
+	Sleep(4000);
 
 	return 0;
 }
