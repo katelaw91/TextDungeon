@@ -26,6 +26,8 @@ vector<int>::iterator it;
 vec2d Map(SIZE + 1, vector<char>(0));
 int columns = 0, rows = 0;
 
+
+
 void Setup()
 {
 	cout << "\n\n\n\n\n\n\n\n\nWelcome to\n";
@@ -98,6 +100,8 @@ void Draw(int &playerX, int &playerY)
 	file << "set the char" << endl;
 	file.close();
 
+
+
 	//output GUI
 	cout << "Use arrow keys to move." << endl;
 	cout << "@: Player" << endl;
@@ -135,6 +139,15 @@ void Draw(int &playerX, int &playerY)
 							NewLevel();
 							break;
 						}
+						case '+':
+						{
+							Map[playerY][playerX] = ' ';
+							playerY -= 1;
+							Map[playerY_Move][playerX] = '@';
+							dir = NONE;
+							Score += 25;
+							break;
+						}
 					}
 				}
 
@@ -158,6 +171,15 @@ void Draw(int &playerX, int &playerY)
 							Map[playerY_Move][playerX] = '@';
 							dir = NONE;
 							NewLevel();
+							break;
+						}
+						case '+':
+						{
+							Map[playerY][playerX] = ' ';
+							playerY += 1;
+							Map[playerY_Move][playerX] = '@';
+							dir = NONE;
+							Score += 25;
 							break;
 						}
 					}
@@ -186,6 +208,15 @@ void Draw(int &playerX, int &playerY)
 							NewLevel();
 							break;
 						}
+						case '+':
+						{
+							Map[playerY][playerX] = ' ';
+							playerX += 1;
+							Map[playerY][playerX_Move] = '@';
+							dir = NONE;
+							Score += 25;
+							break;
+						}
 					}
 				}
 
@@ -209,6 +240,15 @@ void Draw(int &playerX, int &playerY)
 							Map[playerY][playerX_Move] = '@';
 							dir = NONE;
 							NewLevel();
+							break;
+						}
+						case '+':
+						{
+							Map[playerY][playerX] = ' ';
+							playerX -= 1;
+							Map[playerY][playerX_Move] = '@';
+							dir = NONE;
+							Score += 25;
 							break;
 						}
 					}
@@ -244,6 +284,7 @@ void Input()
 
 }
 
+
 int main()
 {
 	time_t start, end;
@@ -264,7 +305,7 @@ int main()
 			elapsedTime = difftime(end, start);
 			Draw(playerX, playerY);
 			Input();
-			printf("Time Left to Complete: [  %4.2f  ]\n", countDown - elapsedTime);
+			printf("Score: [ %d ]   Timer: [  %4.2f  ]\n", Score, countDown - elapsedTime);
 			Sleep(Gamespeed);
 			system("cls");
 		} while (elapsedTime != countDown); //run for countDown seconds

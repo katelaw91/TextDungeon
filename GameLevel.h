@@ -38,6 +38,14 @@ public:
 	int startX = 2, startY = 2;
 	int level = 1;
 
+	struct coord {
+		int x;
+		int y;
+	};
+
+	vector<coord> itemCoords;
+
+
 
 	//PUBLIC FUNCTIONS
 
@@ -68,7 +76,7 @@ public:
 			}
 		}
 
-		GenMaze(Level, posX, posY, goalX, goalY, startX, startY);				// Generate Maze
+		GenMaze(Level, posX, posY, goalX, goalY, startX, startY, itemCoords);				// Generate Maze
 	}//end initialize definition
 
 	//Draw MAZE
@@ -134,11 +142,19 @@ private:
 	//PRIVATE FUNCTION DECLARATIONS
 
 	//GENERATE MAZE
-	void GenMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goalY, int &startX, int &startY)
+
+	void GenMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goalY, int &startX, int &startY, vector<coord> &itemCoords)
 	{
 		srand((unsigned)time(NULL));                    // Pick random seed
 
 		int random;
+		for (int i = 0; i < 3; i++) {
+			coord tempCoord;
+			tempCoord.x = ((2 * rand()) + 1) % (SIZE - 1);
+			tempCoord.y = ((2 * rand()) + 1) % (SIZE - 1);
+			itemCoords.push_back(tempCoord);
+		}
+
 		//int randomX = ((2 * rand()) + 1) % (SIZE - 1);          // Generate random odd num between 1 and SIZE for starting place
 		//int randomY = ((2 * rand()) + 1) % (SIZE - 1);
 		int randomX = 1;
@@ -260,6 +276,10 @@ private:
 		goalX = randomX;
 		goalY = randomY;
 		Level[goalY][goalX].display = '=';                    //display exit door
+		for (int i = 0; i < 3; i++) {
+			Level[(itemCoords[i].y)][(itemCoords[i].x)].display = '+';
+		}
+
 		system("cls");
 		//Draw();
 	}//end Update() function
