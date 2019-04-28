@@ -44,6 +44,8 @@ public:
 	};
 
 	vector<coord> itemCoords;
+	vector<coord> enemyCoords;
+
 
 
 
@@ -76,7 +78,7 @@ public:
 			}
 		}
 
-		GenMaze(Level, posX, posY, goalX, goalY, startX, startY, itemCoords);				// Generate Maze
+		GenMaze(Level, posX, posY, goalX, goalY, startX, startY, itemCoords, enemyCoords);				// Generate Maze
 	}//end initialize definition
 
 	//Draw MAZE
@@ -133,7 +135,12 @@ public:
 
 	int getStartX() { return startX; }
 	int getStartY() { return startY; }
-
+	void getEnemyCoord(int &x1, int &x2, int &y1, int &y2) {
+		x1 = enemyCoords[0].x;
+		y1 = enemyCoords[0].y;
+		x2 = enemyCoords[1].x;
+		y2 = enemyCoords[1].y;
+	}
 
 private:
 
@@ -143,7 +150,7 @@ private:
 
 	//GENERATE MAZE
 
-	void GenMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goalY, int &startX, int &startY, vector<coord> &itemCoords)
+	void GenMaze(Cell Level[][SIZE], int &posX, int &posY, int &goalX, int &goalY, int &startX, int &startY, vector<coord> &itemCoords, vector<coord> &enemyCoords)
 	{
 		srand((unsigned)time(NULL));                    // Pick random seed
 
@@ -153,6 +160,13 @@ private:
 			tempCoord.x = ((2 * rand()) + 1) % (SIZE - 1);
 			tempCoord.y = ((2 * rand()) + 1) % (SIZE - 1);
 			itemCoords.push_back(tempCoord);
+		}
+
+		for (int i = 0; i < 2; i++) {
+			coord tempCoord;
+			tempCoord.x = ((2 * rand()) + 1) % (SIZE - 1);
+			tempCoord.y = ((2 * rand()) + 1) % (SIZE - 1);
+			enemyCoords.push_back(tempCoord);
 		}
 
 		//int randomX = ((2 * rand()) + 1) % (SIZE - 1);          // Generate random odd num between 1 and SIZE for starting place

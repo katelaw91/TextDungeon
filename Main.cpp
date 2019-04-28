@@ -26,16 +26,21 @@ vector<int>::iterator it;
 vec2d Map(SIZE + 1, vector<char>(0));
 int columns = 0, rows = 0;
 
-
+int ex1, ex2, ey1, ey2;
 
 void Setup()
 {
+	HWND console = GetConsoleWindow();
+	RECT r;
+	GetWindowRect(console, &r); //stores the console's current dimensions
+	MoveWindow(console, r.left, r.top, 800, 800, TRUE); // 800 width, 100 height
+
 	cout << "\n\n\n\n\n\n\n\n\nWelcome to\n";
 	Sleep(500);
 	cout << "\n\nText Dungeon\n\n";
 	Sleep(1500);
-	cout << "\n\nN) New Game\n\n";
-	cout << "\nS) View High Scores\n\n";
+	cout << "\n\n\t\tN) New Game\n\n";
+	cout << "\n\t\tS) View High Scores\n\n\n\n\n\n";
 
 	while (menu != 1) {
 
@@ -79,7 +84,7 @@ void NewLevel()
 	
 }
 
-void Draw(int &playerX, int &playerY)
+int Draw(int &playerX, int &playerY)
 {
 	ofstream file;
 	file.open("error.txt");
@@ -99,7 +104,6 @@ void Draw(int &playerX, int &playerY)
 	Map[playerY][playerX] = '@'; //display character
 	file << "set the char" << endl;
 	file.close();
-
 
 
 	//output GUI
@@ -148,6 +152,16 @@ void Draw(int &playerX, int &playerY)
 							Score += 25;
 							break;
 						}
+						case '*':
+						{
+							Map[playerY][playerX] = ' ';
+							playerY -= 1;
+							Map[playerY_Move][playerX] = '*';
+							dir = NONE;
+							system("cls");
+							Score -= 100;
+							break;
+						}
 					}
 				}
 
@@ -180,6 +194,16 @@ void Draw(int &playerX, int &playerY)
 							Map[playerY_Move][playerX] = '@';
 							dir = NONE;
 							Score += 25;
+							break;
+						}
+						case '*':
+						{
+							Map[playerY][playerX] = ' ';
+							playerY += 1;
+							Map[playerY_Move][playerX] = '*';
+							dir = NONE;
+							system("cls");
+							Score -= 100;
 							break;
 						}
 					}
@@ -217,6 +241,16 @@ void Draw(int &playerX, int &playerY)
 							Score += 25;
 							break;
 						}
+						case '*':
+						{
+							Map[playerY][playerX] = ' ';
+							playerX += 1;
+							Map[playerY][playerX_Move] = '*';
+							dir = NONE;
+							system("cls");
+							Score -= 100;
+							break;
+						}
 					}
 				}
 
@@ -251,6 +285,16 @@ void Draw(int &playerX, int &playerY)
 							Score += 25;
 							break;
 						}
+						case '*':
+						{
+							Map[playerY][playerX] = ' ';
+							playerX -= 1;
+							Map[playerY][playerX_Move] = '*';
+							dir = NONE;
+							system("cls");
+							Score -= 100;
+							break;
+						}
 					}
 				}
 
@@ -259,10 +303,147 @@ void Draw(int &playerX, int &playerY)
 
 			}
 
+			//Move enemies
+			Map[ey1][ex1] = '*'; //display character
+			if ((ey1 == playerY) && (ex1 == playerX)) {
+				Map[playerY][playerX] = ' ';
+				return 1;
+			}
+			int enemyDirection1;
+			int enemyDirection2;
+
+			srand((unsigned)time(NULL));                    // Pick random seed
 
 
+			enemyDirection1 = rand() % 4;
+			enemyDirection2 = rand() % 4;
+			if ((GetAsyncKeyState(VK_UP) != 0) || (GetAsyncKeyState(VK_DOWN) != 0) || (GetAsyncKeyState(VK_RIGHT) != 0) || (GetAsyncKeyState(VK_LEFT) != 0)) {
+				if (enemyDirection1 == 0) {
+					if (ey1 > 2) {
+						if (Map[ey1][ey2] != '=') {
+							Map[ey1][ex1] = ' ';
+							Map[ey1 - 1][ex1] = '*';
+							ey1 -= 1;
+							srand((unsigned)time(NULL));
+							enemyDirection1 = rand() % 4;
+						}
+						else {
+							enemyDirection1 = rand() % 4;
+						}
+
+					}
+				}
+				if (enemyDirection1 == 1) {
+					if (ey1 < rows - 2) {
+						if (Map[ey1][ey2] != '=') {
+							Map[ey1][ex1] = ' ';
+							Map[ey1 + 1][ex1] = '*';
+							ey1 += 1;
+							srand((unsigned)time(NULL));                    // Pick random seed
+							enemyDirection1 = rand() % 4;
+						}
+					}
+					else {
+						enemyDirection1 = rand() % 4;
+					}
+
+				}
+				if (enemyDirection1 == 2) {
+					if (ex1 < columns - 2) {
+						if (Map[ey1][ey2] != '=') {
+							Map[ey1][ex1] = ' ';
+							Map[ey1][ex1 + 1] = '*';
+							srand((unsigned)time(NULL));                    // Pick random seed
+							enemyDirection1 = rand() % 4;
+							ex1 += 1;
+						}
+					}
+					else {
+						enemyDirection1 = rand() % 4;
+					}
+				}
+				if (enemyDirection1 == 3) {
+					if (ex1 > 2) {
+						if (Map[ey1][ey2] != '=') {
+							Map[ey1][ex1] = ' ';
+							Map[ey1][ex1 - 1] = '*';
+							ex1 -= 1;
+							srand((unsigned)time(NULL));                    // Pick random seed
+							enemyDirection1 = rand() % 4;
+						}
+					}
+					else {
+						enemyDirection1 = rand() % 4;
+					}
+
+				}
+
+				if (enemyDirection2 == 0) {
+					if (ey2 > 2) {
+						if (Map[ey1][ey2] != '=') {
+							Map[ey2][ex2] = ' ';
+							Map[ey2 - 1][ex2] = '*';
+							ey2 -= 1;
+							srand((unsigned)time(NULL));
+							enemyDirection2 = rand() % 4;
+						}
+
+					}
+					else {
+						enemyDirection2 = rand() % 4;
+
+					}
+				}
+				if (enemyDirection2 == 1) {
+					if (ey2 < rows - 2) {
+						if (Map[ey1][ey2] != '=') {
+							Map[ey2][ex2] = ' ';
+							Map[ey2 + 1][ex2] = '*';
+							ey2 += 1;
+							srand((unsigned)time(NULL));                    // Pick random seed
+							enemyDirection2 = rand() % 4;
+						}
+					}
+					else {
+						enemyDirection2 = rand() % 4;
+					}
+
+				}
+				if (enemyDirection2 == 2) {
+					if (ex2 < columns - 2) {
+						if (Map[ey1][ey2] != '=') {
+							Map[ey2][ex2] = ' ';
+							Map[ey2][ex2 + 1] = '*';
+							srand((unsigned)time(NULL));                    // Pick random seed
+							enemyDirection2 = rand() % 4;
+							ex2 += 1;
+						}
+					}
+					else {
+						enemyDirection2 = rand() % 4;
+					}
+				}
+				if (enemyDirection2 == 3) {
+					if (ex2 > 2) {
+						if (Map[ey1][ey2] != '=') {
+							Map[ey2][ex2] = ' ';
+							Map[ey2][ex2 - 1] = '*';
+							ex2 -= 1;
+							srand((unsigned)time(NULL));                    // Pick random seed
+
+							enemyDirection2 = rand() % 4;
+						}
+					}
+					else {
+						enemyDirection2 = rand() % 4;
+					}
+
+				}
+
+			}
 
 
+			return 0;
 }
 
 void Input()
@@ -289,11 +470,11 @@ int main()
 {
 	time_t start, end;
 	double elapsedTime;
+	int g;
 
 	GameLevel *oLevel = new GameLevel();
 	oLevel->Update();
-	//playerX = oLevel->getStartX();
-	//playerY = oLevel->getStartY();
+	oLevel->getEnemyCoord(ex1, ex2, ey1, ey2);
 
 	Setup();
 	time(&start); //start the timer
@@ -303,11 +484,14 @@ int main()
 		do {
 			time(&end);
 			elapsedTime = difftime(end, start);
-			Draw(playerX, playerY);
+			g = Draw(playerX, playerY);
 			Input();
 			printf("Score: [ %d ]   Timer: [  %4.2f  ]\n", Score, countDown - elapsedTime);
 			Sleep(Gamespeed);
 			system("cls");
+			if ((Score < 0) or (g > 0)) {
+				break;
+			}
 		} while (elapsedTime != countDown); //run for countDown seconds
 		gameOver = true;
 		//system("cls");
