@@ -598,7 +598,7 @@ int main()
 			g = Draw(playerX, playerY);
 			i = Input();
 			printf("Score: [ %d ]   Timer: [  %4.2f  ]\n", Score, countDown - elapsedTime);
-			//Sleep(Gamespeed);
+			Sleep(Gamespeed);
 			system("cls");
 			if ((Score < 0) || (g > 0) || (i > 0)) {
 				break;
