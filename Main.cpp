@@ -3,8 +3,12 @@
 #include <vector> //for 2d vector
 #include "read2DMaze.h" //load maze from file
 #include "GameLevel.h" //generate/save maze to file
-#include <time.h>
-#include <chrono>
+#include <time.h> // for timer
+#include <chrono> // for timer
+#include <string.h> //for player name entry
+#include <sstream> //for string parsing
+#include <iomanip> //for output formatting
+#include <string> //for to_string
 
 using namespace std;
 
@@ -12,6 +16,7 @@ bool gameOver = false;
 int Gamespeed = 100;
 double countDown = 30;
 int Score = 0;
+int highestScore = 0;
 int level = 1;
 int menu = 0;
 int width = 22, height = 10;
@@ -21,12 +26,73 @@ enum direction { NONE, LEFT, RIGHT, UP, DOWN };
 direction dir;
 char input;
 
+char block = 219;
+char box = '+';
+char enemy = 248;
+char door = 240;
+char player = '@';
 
 vector<int>::iterator it;
 vec2d Map(SIZE + 1, vector<char>(0));
 int columns = 0, rows = 0;
 
 int ex1, ex2, ey1, ey2;
+
+struct highscore {
+	int score;
+	string name;
+};
+
+vector<highscore> highscoreList;
+
+void LoadScores(vector<highscore> &highscoreList) {
+	ifstream file;
+	int i = 0;
+	string name, line, delim, tempName;
+	int score;
+	highscore loadScore;
+	int tempScore;
+	file.open("highscores.txt");
+	if (file.is_open()) {
+		while (getline(file, line)) {
+			stringstream ss(line);
+			ss >> score >> name;
+			//cout << "score: " << score << "name: " << name;
+			loadScore.score = score;
+			loadScore.name = name;
+			highscoreList.push_back(loadScore);
+		}
+		file.close();
+		
+	}
+
+	//sort highscores
+	for (int i = highscoreList.size() - 1; i > 0; i--) {
+		int first = 0;
+		for (int j = 1; j <= i; j++) {
+
+			if (highscoreList[j].score > highscoreList[first].score) {
+				first = j;
+			}
+				tempScore = highscoreList[first].score;
+				tempName = highscoreList[first].name;
+				highscoreList[first].score = highscoreList[i].score;
+				highscoreList[first].name = highscoreList[i].name;
+				highscoreList[i].score = tempScore;
+				highscoreList[i].name = tempName;
+
+			}
+
+	}
+	highestScore = highscoreList[0].score;
+	//output highscores
+
+	for (int i = highscoreList.size() -1; i > 0; i--) {
+		cout << "\t\t\t[" << left << setw(30) << highscoreList[i].name << right << setw(10) << highscoreList[i].score << " ]" << endl;
+
+	}
+
+}
 
 void Setup()
 {
@@ -35,6 +101,7 @@ void Setup()
 	GetWindowRect(console, &r); //stores the console's current dimensions
 	MoveWindow(console, r.left, r.top, 800, 800, TRUE); // 800 width, 100 height
 
+	system("color 1C");
 	cout << "\n\n\n\n\n\n\n\n\nWelcome to\n";
 	Sleep(500);
 	cout << "\n\nText Dungeon\n\n";
@@ -53,8 +120,8 @@ void Setup()
 			menu = 1;
 		}
 		else {
-
-			cout << "Highscores go here..." << endl;
+			cout << "\t\t\t\t   Highscores" << endl;
+			LoadScores(highscoreList);
 
 		}
 	}
@@ -69,7 +136,7 @@ void NewLevel()
 	system("cls");
 	cout << "\n\n\n\n\n\n\n\n\nLevel " << level << endl;
 	cout << "\n\nScore: " << Score;
-	cout << "\n +30 seconds\n";
+	cout << "\n +10 seconds\n";
 	countDown += 3;
 	Sleep(3000);
 	GameLevel *oNewLevel = new GameLevel();
@@ -79,7 +146,7 @@ void NewLevel()
 	playerX = 1;
 	playerY = 1;
 	NewMap.swap(Map);
-	countDown += 30;
+	countDown += 10;
 
 	
 }
@@ -96,7 +163,24 @@ int Draw(int &playerX, int &playerY)
 	{
 		for (int j = 0; j < columns; j++)
 		{
-			cout << Map[i][j];
+			if (Map[i][j] == '|') {
+				cout << block;
+			}
+			if (Map[i][j] == ' ') {
+				cout << ' ';
+			}
+			if (Map[i][j] == '+') {
+				cout << box;
+			}
+			if (Map[i][j] == '=') {
+				cout << door;
+			}
+			if(Map[i][j] == '@'){
+				cout << player;
+			}
+			if (Map[i][j] == '*') {
+				cout << enemy;
+			}
 		}
 		cout << endl;
 	}
@@ -105,11 +189,12 @@ int Draw(int &playerX, int &playerY)
 	file << "set the char" << endl;
 	file.close();
 
-
 	//output GUI
 	cout << "Use arrow keys to move." << endl;
-	cout << "@: Player" << endl;
-	cout << "=: Door" << endl;
+	cout << player <<": Player" << endl;
+	cout << door <<": Door" << endl;
+	cout << enemy << ": Enemy" << endl;
+	cout << box << ": Treasure" << endl;
 	cout << "Press [esc] to quit." << endl;
 	//search map grid for player, then move based on dir input
 	//if there is an empty space, move character to the new position
@@ -380,7 +465,7 @@ int Draw(int &playerX, int &playerY)
 
 				if (enemyDirection2 == 0) {
 					if (ey2 > 2) {
-						if (Map[ey1][ey2] != '=') {
+						if (Map[ey2 - 1][ex2] == ' ') {
 							Map[ey2][ex2] = ' ';
 							Map[ey2 - 1][ex2] = '*';
 							ey2 -= 1;
@@ -396,7 +481,7 @@ int Draw(int &playerX, int &playerY)
 				}
 				if (enemyDirection2 == 1) {
 					if (ey2 < rows - 2) {
-						if (Map[ey1][ey2] != '=') {
+						if (Map[ey2 + 1][ex2] == ' ') {
 							Map[ey2][ex2] = ' ';
 							Map[ey2 + 1][ex2] = '*';
 							ey2 += 1;
@@ -411,7 +496,7 @@ int Draw(int &playerX, int &playerY)
 				}
 				if (enemyDirection2 == 2) {
 					if (ex2 < columns - 2) {
-						if (Map[ey1][ey2] != '=') {
+						if (Map[ey2][ex2 + 1] == ' ') {
 							Map[ey2][ex2] = ' ';
 							Map[ey2][ex2 + 1] = '*';
 							srand((unsigned)time(NULL));                    // Pick random seed
@@ -425,7 +510,7 @@ int Draw(int &playerX, int &playerY)
 				}
 				if (enemyDirection2 == 3) {
 					if (ex2 > 2) {
-						if (Map[ey1][ey2] != '=') {
+						if (Map[ey2][ex2 - 1] == ' ') {
 							Map[ey2][ex2] = ' ';
 							Map[ey2][ex2 - 1] = '*';
 							ex2 -= 1;
@@ -446,7 +531,7 @@ int Draw(int &playerX, int &playerY)
 			return 0;
 }
 
-void Input()
+int Input()
 {
 	if (GetAsyncKeyState(VK_UP) != 0)
 		dir = UP;
@@ -458,19 +543,38 @@ void Input()
 		dir = LEFT;
 	if (GetAsyncKeyState(VK_ESCAPE) != 0)
 	{ 
-		system("cls");
-		gameOver = true;
+		return 1;
 	}
 
 
+	return 0;
 }
 
+
+
+void Save(vector<highscore> &highscoreList) {
+	string name;
+	cout << "Score: " << Score << endl;
+
+	if (Score >= highestScore)
+		cout << "\nHighscore!!!\n";
+	cout << "\n\nEnter name: " << endl;
+	cin >> name;
+
+	ofstream file;
+	file.open("highscores.txt", ios::app);
+	if (file.is_open())
+	{
+		file << Score << " " << name << endl;
+	}
+	file.close();
+}
 
 int main()
 {
 	time_t start, end;
 	double elapsedTime;
-	int g;
+	int g, i;
 
 	GameLevel *oLevel = new GameLevel();
 	oLevel->Update();
@@ -485,15 +589,16 @@ int main()
 			time(&end);
 			elapsedTime = difftime(end, start);
 			g = Draw(playerX, playerY);
-			Input();
+			i = Input();
 			printf("Score: [ %d ]   Timer: [  %4.2f  ]\n", Score, countDown - elapsedTime);
 			Sleep(Gamespeed);
 			system("cls");
-			if ((Score < 0) or (g > 0)) {
+			if ((Score < 0) || (g > 0) || (i > 0)) {
 				break;
 			}
 		} while (elapsedTime != countDown); //run for countDown seconds
 		gameOver = true;
+		Save(highscoreList);
 		//system("cls");
 
 	}
