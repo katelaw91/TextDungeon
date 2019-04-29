@@ -28,7 +28,7 @@ char input;
 
 char block = 219;
 char box = '+';
-char enemy = 248;
+char enemy = '*';
 char door = 240;
 char player = '@';
 
@@ -46,6 +46,7 @@ struct highscore {
 vector<highscore> highscoreList;
 
 void LoadScores(vector<highscore> &highscoreList) {
+	highscoreList.clear();
 	ifstream file;
 	int i = 0;
 	string name, line, delim, tempName;
@@ -87,9 +88,15 @@ void LoadScores(vector<highscore> &highscoreList) {
 	highestScore = highscoreList[0].score;
 	//output highscores
 
-	for (int i = highscoreList.size() -1; i > 0; i--) {
-		cout << "\t\t\t[" << left << setw(30) << highscoreList[i].name << right << setw(10) << highscoreList[i].score << " ]" << endl;
-
+	for (int i = highscoreList.size(); i > 0; i--) {
+		try
+		{
+			cout << "\t\t\t[" << left << setw(30) << highscoreList[i - 1].name << right << setw(10) << highscoreList[i - 1].score << " ]" << endl;
+		}
+		catch(...)
+		{
+			cout << "Reading Highscore List goes wrong! Please try again!" << endl;
+		}
 	}
 
 }
@@ -405,7 +412,7 @@ int Draw(int &playerX, int &playerY)
 			if ((GetAsyncKeyState(VK_UP) != 0) || (GetAsyncKeyState(VK_DOWN) != 0) || (GetAsyncKeyState(VK_RIGHT) != 0) || (GetAsyncKeyState(VK_LEFT) != 0)) {
 				if (enemyDirection1 == 0) {
 					if (ey1 > 2) {
-						if (Map[ey1][ey2] != '=') {
+						if (Map[ey1][ex1] != door) {
 							Map[ey1][ex1] = ' ';
 							Map[ey1 - 1][ex1] = '*';
 							ey1 -= 1;
@@ -420,7 +427,7 @@ int Draw(int &playerX, int &playerY)
 				}
 				if (enemyDirection1 == 1) {
 					if (ey1 < rows - 2) {
-						if (Map[ey1][ey2] != '=') {
+						if (Map[ey1][ex1] != door) {
 							Map[ey1][ex1] = ' ';
 							Map[ey1 + 1][ex1] = '*';
 							ey1 += 1;
@@ -435,7 +442,7 @@ int Draw(int &playerX, int &playerY)
 				}
 				if (enemyDirection1 == 2) {
 					if (ex1 < columns - 2) {
-						if (Map[ey1][ey2] != '=') {
+						if (Map[ey1][ex1] != door) {
 							Map[ey1][ex1] = ' ';
 							Map[ey1][ex1 + 1] = '*';
 							srand((unsigned)time(NULL));                    // Pick random seed
@@ -449,7 +456,7 @@ int Draw(int &playerX, int &playerY)
 				}
 				if (enemyDirection1 == 3) {
 					if (ex1 > 2) {
-						if (Map[ey1][ey2] != '=') {
+						if (Map[ey1][ex1] != door){
 							Map[ey1][ex1] = ' ';
 							Map[ey1][ex1 - 1] = '*';
 							ex1 -= 1;

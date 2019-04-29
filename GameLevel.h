@@ -12,8 +12,20 @@
 #endif
 using namespace std;
 
+class Game
+{
+public:
 
-class GameLevel
+	//PUBLIC FUNCTIONS
+	virtual void Init() = 0;
+	virtual void Draw() = 0;
+	virtual void Save() = 0;
+	virtual void Update() = 0;
+
+}; //end Game class
+
+
+class GameLevel: public Game
 {
 public:
 
