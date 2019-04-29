@@ -108,7 +108,7 @@ void Setup()
 	GetWindowRect(console, &r); //stores the console's current dimensions
 	MoveWindow(console, r.left, r.top, 800, 800, TRUE); // 800 width, 100 height
 
-	system("color 1C");
+	system("color B3");
 	cout << "\n\n\n\n\n\n\n\n\nWelcome to\n";
 	Sleep(500);
 	cout << "\n\nText Dungeon\n\n";
